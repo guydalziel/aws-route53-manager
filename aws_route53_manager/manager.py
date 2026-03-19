@@ -14,6 +14,7 @@ except ModuleNotFoundError:
     class ClientError(Exception):
         """Fallback client error type when botocore is unavailable."""
 
+
 from .errors import (
     DependencyError,
     InvalidAwsResponseError,
@@ -40,9 +41,7 @@ class Route53Manager:
         try:
             import boto3
         except ModuleNotFoundError as exc:
-            raise DependencyError(
-                "boto3 is required to submit Route 53 changes. Install the package dependencies."
-            ) from exc
+            raise DependencyError("boto3 is required to submit Route 53 changes. Install the package dependencies.") from exc
 
         logger.debug("Creating default boto3 Route 53 client")
         return boto3.client("route53")
@@ -105,9 +104,7 @@ class Route53Manager:
             next_dns_name = response.get("NextDNSName")
             next_hosted_zone_id = response.get("NextHostedZoneId")
             if not isinstance(next_dns_name, str) or not isinstance(next_hosted_zone_id, str):
-                raise InvalidAwsResponseError(
-                    "Route 53 returned a truncated hosted zone response without pagination markers."
-                )
+                raise InvalidAwsResponseError("Route 53 returned a truncated hosted zone response without pagination markers.")
             next_page = (next_dns_name, next_hosted_zone_id)
 
         return self._parse_hosted_zone_payloads(hosted_zone_payloads), is_truncated, next_page

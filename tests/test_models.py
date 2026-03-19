@@ -11,9 +11,7 @@ class HostedZoneTests(unittest.TestCase):
     """Validate hosted zone parsing behaviour."""
 
     def test_from_api_payload_normalises_fields(self) -> None:
-        hosted_zone = HostedZone.from_api_payload(
-            {"Id": "/hostedzone/Z123", "Name": "Example.com."}
-        )
+        hosted_zone = HostedZone.from_api_payload({"Id": "/hostedzone/Z123", "Name": "Example.com."})
 
         self.assertEqual(hosted_zone.id, "Z123")
         self.assertEqual(hosted_zone.name, "example.com")
