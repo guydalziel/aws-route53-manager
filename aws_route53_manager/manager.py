@@ -14,12 +14,12 @@ except ModuleNotFoundError:
     class ClientError(Exception):
         """Fallback client error type when botocore is unavailable."""
 
-from aws_route53_manager.errors import (
+from .errors import (
     DependencyError,
     InvalidAwsResponseError,
     Route53ManagerError,
 )
-from aws_route53_manager.models import (
+from .models import (
     HostedZone,
     RecordChangeRequest,
     RecordChangeResult,
@@ -105,15 +105,15 @@ class Route53Manager:
             next_dns_name = response.get("NextDNSName")
             next_hosted_zone_id = response.get("NextHostedZoneId")
             if not isinstance(next_dns_name, str) or not isinstance(next_hosted_zone_id, str):
-                raise InvalidAwsResponseError("Route 53 returned a truncated hosted zone response without pagination markers.")
+                raise InvalidAwsResponseError(
+                    "Route 53 returned a truncated hosted zone response without pagination markers."
+                )
             next_page = (next_dns_name, next_hosted_zone_id)
 
         return self._parse_hosted_zone_payloads(hosted_zone_payloads), is_truncated, next_page
 
     @staticmethod
-    def _parse_hosted_zone_payloads(
-        hosted_zone_payloads: list[object]
-    ) -> list[HostedZone]:
+    def _parse_hosted_zone_payloads(hosted_zone_payloads: list[object]) -> list[HostedZone]:
         """Convert a hosted zone payload list into HostedZone objects."""
         hosted_zones: list[HostedZone] = []
         for hosted_zone_payload in hosted_zone_payloads:
@@ -133,7 +133,7 @@ class Route53Manager:
                     record_name,
                     hosted_zone.name,
                     hosted_zone.id,
-               )
+                )
                 return hosted_zone
 
         raise Route53ManagerError(f"No hosted zone exists in this account for '{record_name}'")

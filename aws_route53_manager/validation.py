@@ -2,8 +2,8 @@
 
 import ipaddress
 
-from aws_route53_manager.enums import RecordType
-from aws_route53_manager.errors import RecordValidationError
+from .enums import RecordType
+from .errors import RecordValidationError
 
 
 class RecordInputValidator:
@@ -15,9 +15,12 @@ class RecordInputValidator:
     @classmethod
     def validate_ttl(cls, value: int | str) -> int:
         """Validate that a TTL is a non-negative integer."""
+        if isinstance(value, bool):
+            raise RecordValidationError(f"invalid TTL '{value}'")
+
         try:
             ttl = int(value)
-        except ValueError as exc:
+        except (TypeError, ValueError) as exc:
             raise RecordValidationError(f"invalid TTL '{value}'") from exc
 
         if ttl < 0:

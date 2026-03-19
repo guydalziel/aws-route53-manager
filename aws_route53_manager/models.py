@@ -3,8 +3,8 @@
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-from aws_route53_manager.enums import RecordAction, RecordType
-from aws_route53_manager.errors import InvalidAwsResponseError
+from .enums import RecordAction, RecordType
+from .errors import InvalidAwsResponseError
 
 
 def _normalise_route53_resource_id(resource_id: str) -> str:
@@ -41,7 +41,8 @@ class HostedZone:
 
     def matches_record(self, record_name: str) -> bool:
         """Return True when this hosted zone can manage record_name."""
-        return record_name == self.name or record_name.endswith(f".{self.name}")
+        candidate_name = _normalise_dns_name(record_name)
+        return candidate_name == self.name or candidate_name.endswith(f".{self.name}")
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,7 +57,7 @@ class RecordChangeRequest:
 
     def __post_init__(self) -> None:
         """Normalise and validate all request fields."""
-        from aws_route53_manager.validation import RecordInputValidator
+        from .validation import RecordInputValidator
 
         normalised_action = RecordAction.coerce(self.action)
         normalised_record_type = RecordType.coerce(self.record_type)
@@ -104,6 +105,9 @@ class RecordChangeResult:
                 change_id = _normalise_route53_resource_id(raw_change_id)
             case _:
                 raise InvalidAwsResponseError("Route 53 change response is missing required ChangeInfo.Id or ChangeInfo.Status fields.")
+
+        if not change_id or not status:
+            raise InvalidAwsResponseError("Route 53 change response contained an empty change identifier or status.")
 
         return cls(
             change_id=change_id,

@@ -1,23 +1,24 @@
 """Route 53 record management package."""
 
-from importlib.metadata import PackageNotFoundError, version as package_version
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as package_version
 
-from aws_route53_manager.enums import RecordAction, RecordType
-from aws_route53_manager.errors import (
+from .enums import RecordAction, RecordType
+from .errors import (
     DependencyError,
     InvalidAwsResponseError,
     RecordValidationError,
     Route53ManagerError,
 )
-from aws_route53_manager.manager import Route53Manager
-from aws_route53_manager.models import HostedZone, RecordChangeRequest, RecordChangeResult
+from .manager import Route53Manager
+from .models import HostedZone, RecordChangeRequest, RecordChangeResult
 
 
 def _resolve_package_version() -> str:
     """Return the installed or generated package version."""
 
     try:
-        from aws_route53_manager._version import version
+        from ._version import version
     except ImportError:
         try:
             return package_version("aws-route53-manager")

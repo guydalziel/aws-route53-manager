@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 from aws_route53_manager.cli import PROGRAM_NAME, build_change_request, build_parser, main, parse_arguments
 from aws_route53_manager.enums import RecordAction, RecordType
 from aws_route53_manager.errors import Route53ManagerError
-from aws_route53_manager.models import RecordChangeRequest, RecordChangeResult
+from aws_route53_manager.models import RecordChangeResult
 
 
 class CliTests(unittest.TestCase):

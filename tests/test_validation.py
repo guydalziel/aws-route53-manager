@@ -51,3 +51,11 @@ class RecordInputValidatorTests(unittest.TestCase):
     def test_validate_ttl_rejects_negative_values(self) -> None:
         with self.assertRaises(RecordValidationError):
             RecordInputValidator.validate_ttl(-1)
+
+    def test_validate_ttl_rejects_boolean_values(self) -> None:
+        with self.assertRaises(RecordValidationError):
+            RecordInputValidator.validate_ttl(True)
+
+    def test_validate_ttl_rejects_none(self) -> None:
+        with self.assertRaises(RecordValidationError):
+            RecordInputValidator.validate_ttl(None)  # type: ignore[arg-type]

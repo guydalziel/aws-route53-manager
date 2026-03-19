@@ -5,7 +5,7 @@ import sys
 from collections.abc import Callable
 from typing import Any
 
-from aws_route53_manager.errors import DependencyError
+from .errors import DependencyError
 
 DEFAULT_LOG_LEVEL = "INFO"
 SUPPORTED_LOG_LEVELS = (

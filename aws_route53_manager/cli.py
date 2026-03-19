@@ -3,17 +3,17 @@
 import argparse
 import sys
 
-from aws_route53_manager.enums import RecordAction, RecordType
-from aws_route53_manager.errors import RecordValidationError, Route53ManagerError
-from aws_route53_manager.logging import (
+from .enums import RecordAction, RecordType
+from .errors import RecordValidationError, Route53ManagerError
+from .logging import (
     DEFAULT_LOG_LEVEL,
     SUPPORTED_LOG_LEVELS,
     LoggingConfigurationError,
     configure_logging,
     logger,
 )
-from aws_route53_manager.manager import Route53Manager
-from aws_route53_manager.models import RecordChangeRequest
+from .manager import Route53Manager
+from .models import RecordChangeRequest
 
 DEFAULT_ACTION = RecordAction.CREATE.value
 DEFAULT_RECORD_TTL = 300

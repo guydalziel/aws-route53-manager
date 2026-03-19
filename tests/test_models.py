@@ -22,6 +22,11 @@ class HostedZoneTests(unittest.TestCase):
         with self.assertRaises(InvalidAwsResponseError):
             HostedZone.from_api_payload({"Id": 123, "Name": "example.com"})  # type: ignore[dict-item]
 
+    def test_matches_record_normalises_case_and_trailing_dot(self) -> None:
+        hosted_zone = HostedZone(id="Z123", name="example.com")
+
+        self.assertTrue(hosted_zone.matches_record("App.Example.com."))
+
 
 class RecordChangeRequestTests(unittest.TestCase):
     """Validate request normalisation at the model boundary."""
@@ -74,3 +79,9 @@ class RecordChangeResultTests(unittest.TestCase):
 
         self.assertEqual(result.change_id, "C123")
         self.assertEqual(result.status, "PENDING")
+
+    def test_from_api_response_rejects_empty_change_fields(self) -> None:
+        hosted_zone = HostedZone(id="Z123", name="example.com")
+
+        with self.assertRaises(InvalidAwsResponseError):
+            RecordChangeResult.from_api_response({"ChangeInfo": {"Id": "/change/", "Status": ""}}, hosted_zone)

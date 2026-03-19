@@ -2,7 +2,7 @@
 
 from enum import Enum
 
-from aws_route53_manager.errors import RecordValidationError
+from .errors import RecordValidationError
 
 
 class _StringEnum(str, Enum):
@@ -37,7 +37,6 @@ class RecordAction(_StringEnum):
                 raise RecordValidationError(f"unsupported action '{value}'") from exc
 
         raise RecordValidationError(f"unsupported action '{value}'")
-
 
 
 class RecordType(_StringEnum):
